@@ -1,4 +1,12 @@
 resource "aws_dynamodb_table_item" "visitor-counter" {
+
+  # ignore changes to counterValue - this will change over time
+  lifecycle {
+    ignore_changes = [
+      item,
+    ]
+  }
+
   table_name = aws_dynamodb_table.resume-counter.name
   hash_key   = aws_dynamodb_table.resume-counter.hash_key
 
