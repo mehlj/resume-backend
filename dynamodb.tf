@@ -1,10 +1,11 @@
-resource "aws_dynamodb_table_item" "init-counter" {
+resource "aws_dynamodb_table_item" "visitor-counter" {
   table_name = aws_dynamodb_table.resume-counter.name
   hash_key   = aws_dynamodb_table.resume-counter.hash_key
 
   item = <<ITEM
 {
-  "VisitorCount": {"N": "0"}
+  "primaryKey": {"S": "VisitorCounter"},
+  "counterValue": {"N": "0"}
 }
 ITEM
 }
@@ -12,10 +13,10 @@ ITEM
 resource "aws_dynamodb_table" "resume-counter" {
   name         = "resume-counter"
   billing_mode = "PAY_PER_REQUEST"
-  hash_key     = "VisitorCount"
+  hash_key     = "primaryKey"
 
   attribute {
-    name = "VisitorCount"
-    type = "N"
+    name = "primaryKey"
+    type = "S"
   }
 }
