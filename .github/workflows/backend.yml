@@ -51,7 +51,7 @@ jobs:
         go-version: '1.20'
  
     - name: build binary
-      run: GOOS=linux GOARCH=amd64 go build -o main main.go
+      run: GOOS=linux GOARCH=amd64 CGO_ENABLED=0 go build -o main main.go
 
     - name: zip up binary for lambda
       run: zip lambda-handler.zip main
