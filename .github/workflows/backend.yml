@@ -77,10 +77,11 @@ jobs:
       with:
         name: lambda-artifact
 
+    # TODO: remove
     - name: debug
       run: pwd
 
-    - name: debug2
+    - name: debug2 
       run: ls -altr
 
     # Setup AWS credentials for our account
