@@ -11,7 +11,7 @@ import (
 )
 
 // Increments atomic counter in DynamoDB
-func incrementCounter(){
+func incrementCounter() (string, error) {
   session := session.Must(session.NewSessionWithOptions(session.Options{
     SharedConfigState: session.SharedConfigEnable,
   }))
@@ -39,6 +39,8 @@ func incrementCounter(){
   if err != nil {
       log.Fatalf("Got error calling UpdateItem: %s", err)
   }
+
+  return "Incremented visitor counter", nil
 }
 
 func main() {
