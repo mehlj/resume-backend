@@ -5,14 +5,14 @@ resource "aws_apigatewayv2_api" "lambda" {
 
 resource "aws_apigatewayv2_stage" "lambda" {
   api_id = aws_apigatewayv2_api.lambda.id
-  name        = "resume_lambda_stage"
+  name   = "resume_lambda_stage"
 
   auto_deploy = true
 }
 
 resource "aws_apigatewayv2_integration" "lambda" {
-  api_id             = aws_apigatewayv2_api.lambda.id
-  integration_type   = "AWS_PROXY"
+  api_id           = aws_apigatewayv2_api.lambda.id
+  integration_type = "AWS_PROXY"
 
   integration_uri    = aws_lambda_function.function.invoke_arn
   integration_method = "POST"
