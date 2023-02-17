@@ -1,0 +1,110 @@
+name: 'Test and deploy resume backend'
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  lint:
+    name: Lint golang code
+    runs-on: ubuntu-22.04
+    
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-go@v3
+      with:
+        go-version: '1.20'
+
+    - name: golangci-lint
+      uses: golangci/golangci-lint-action@v3
+      with:
+        version: latest
+
+  # TODO------
+  # test:
+  #   name: Run tests
+  #   runs-on: 'ubuntu-latest'
+  #   needs: lint
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-go@v2
+  #       with:
+  #         go-version: '1.16.3'
+  #     - run: go test -v -cover
+
+  build:
+    name: Lint golang code
+    runs-on: ubuntu-22.04
+    needs: lint
+    # needs: test
+    
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-go@v3
+      with:
+        go-version: '1.20'
+ 
+    - name: build binary
+      run: GOOS=linux GOARCH=amd64 go build -o bootstrap main.go
+
+    - name: zip up binary for lambda
+      run: zip lambda-handler.zip bootstrap
+
+    - name: allow binary to be shared to other job
+      uses: actions/upload-artifact@v3
+      with:
+        name: lambda-artifact
+        path: lambda-handler.zip
+        retention-days: 1
+
+  terraform:
+    name: 'Terraform'
+    runs-on: ubuntu-22.04
+    needs: build
+
+    steps:
+    - uses: actions/checkout@v3
+    - uses: hashicorp/setup-terraform@v2
+
+    - name: Download lambda zip from build job
+      uses: actions/download-artifact@v3
+      with:
+        name: lambda-artifact
+
+    - name: debug
+      run: pwd
+
+    - name: debug2
+      run: ls -altr
+
+    # Setup AWS credentials for our account
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+          
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Terraform Init
+      run: terraform init
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    - name: Terraform Format
+      run: terraform fmt -check
+
+    # Generates an execution plan for Terraform
+    - name: Terraform Plan
+      run: terraform plan
+
+    # On push to master, build or change infrastructure according to Terraform configuration files
+    # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+    - name: Terraform Apply
+      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
+      run: terraform apply -auto-approve
