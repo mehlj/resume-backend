@@ -42,5 +42,5 @@ func incrementCounter(){
 }
 
 func main() {
-  lamda.Start(incrementCounter)
+  lambda.Start(incrementCounter)
 }

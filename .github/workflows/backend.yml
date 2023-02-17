@@ -39,7 +39,7 @@ jobs:
   #     - run: go test -v -cover
 
   build:
-    name: Lint golang code
+    name: Compile golang binary
     runs-on: ubuntu-22.04
     needs: lint
     # needs: test
