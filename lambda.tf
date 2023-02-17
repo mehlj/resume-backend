@@ -4,6 +4,6 @@ resource "aws_lambda_function" "function" {
   source_code_hash = filebase64sha256("lambda-handler.zip")
   role             = aws_iam_role.lambda-role.arn
 
-  handler = "bootstrap"
+  handler = "main"
   runtime = "go1.x"
 }
