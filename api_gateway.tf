@@ -21,7 +21,7 @@ resource "aws_apigatewayv2_integration" "lambda" {
 resource "aws_apigatewayv2_route" "increment" {
   api_id = aws_apigatewayv2_api.lambda.id
 
-  route_key = "GET /increment"
+  route_key = "POST /increment"
   target    = "integrations/${aws_apigatewayv2_integration.lambda.id}"
 }
 

@@ -10,6 +10,10 @@ import (
   "log"
 )
 
+type Response struct {
+  Status string `json:"status:"`
+}
+
 // Increments atomic counter in DynamoDB
 func incrementCounter() (string, error) {
   session := session.Must(session.NewSessionWithOptions(session.Options{
@@ -40,7 +44,9 @@ func incrementCounter() (string, error) {
       log.Fatalf("Got error calling UpdateItem: %s", err)
   }
 
-  return "Incremented visitor counter", nil
+  return Response{
+    Status: "success",
+  }, nil
 }
 
 func main() {
