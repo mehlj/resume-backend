@@ -11,7 +11,7 @@ import (
 )
 
 type Response struct {
-  Status string `json:"status:"`
+  Status string `json:"status"`
 }
 
 // Increments atomic counter in DynamoDB
@@ -45,7 +45,7 @@ func incrementCounter() (string, error) {
   }
 
   return Response{
-    Status: "success",
+    status: "success",
   }, nil
 }
 
