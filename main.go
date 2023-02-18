@@ -15,7 +15,7 @@ type Response struct {
 }
 
 // Increments atomic counter in DynamoDB
-func incrementCounter() (string, error) {
+func incrementCounter() (Response, error) {
   session := session.Must(session.NewSessionWithOptions(session.Options{
     SharedConfigState: session.SharedConfigEnable,
   }))
@@ -45,7 +45,7 @@ func incrementCounter() (string, error) {
   }
 
   return Response{
-    status: "success",
+    Status: "success",
   }, nil
 }
 
