@@ -7,15 +7,13 @@ import (
   "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 
   "github.com/aws/aws-lambda-go/lambda"
+  "github.com/aws/aws-lambda-go/events"
 
   "fmt"
   "log"
+  "net/http"
+  "strconv"
 )
-
-type Response struct {
-  StatusCode int `json:"statuscode"`
-  Counter int `json:"counter"`
-}
 
 type Item struct {
   CounterValue int `json:"counterValue"`
@@ -50,16 +48,12 @@ func getCounter() (int){
   if err != nil {
     panic(fmt.Sprintf("Failed to unmarshal Record, %v", err))
   }
-
-  if item.CounterValue == 0 {
-    panic(fmt.Sprintf("Failed to obtain counterValue", err))
-  }
   
   return item.CounterValue
 }
 
 // Increments atomic counter in DynamoDB
-func incrementCounter() (Response, error) {
+func incrementCounter(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
   session := session.Must(session.NewSessionWithOptions(session.Options{
     SharedConfigState: session.SharedConfigEnable,
   }))
@@ -88,14 +82,12 @@ func incrementCounter() (Response, error) {
       log.Fatalf("Got error calling UpdateItem: %s", err)
   }
 
-  return Response{
-    StatusCode: 200,
-    Counter: getCounter(),
+  return events.APIGatewayProxyResponse{
+    StatusCode: http.StatusOK,
+    Body:       strconv.Itoa(getCounter()),
   }, nil
 }
 
 func main() {
-  incrementCounter()
-
   lambda.Start(incrementCounter)
 }
