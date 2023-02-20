@@ -3,10 +3,10 @@ resource "aws_apigatewayv2_api" "lambda" {
   protocol_type = "HTTP"
 
   cors_configuration {
-    allow_origins = ["https://resume.justenmehl.com"]
+    allow_origins     = ["https://resume.justenmehl.com"]
     allow_credentials = "true"
-    allow_headers = "*"
-    allow_methods = "*"
+    allow_headers     = ["*"]
+    allow_methods     = ["*"]
     max_age = 300
   }
 }
