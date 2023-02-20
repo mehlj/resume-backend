@@ -7,7 +7,7 @@ resource "aws_apigatewayv2_api" "lambda" {
     allow_credentials = "true"
     allow_headers     = ["*"]
     allow_methods     = ["*"]
-    max_age = 300
+    max_age           = 300
   }
 }
 
