@@ -4,6 +4,10 @@ resource "aws_apigatewayv2_api" "lambda" {
 
   cors_configuration {
     allow_origins = ["https://resume.justenmehl.com"]
+    allow_credentials = "true"
+    allow_headers = "*"
+    allow_methods = "*"
+    max_age = 300
   }
 }
 
