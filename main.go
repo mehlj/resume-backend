@@ -48,7 +48,11 @@ func getCounter() (int){
 
   err = dynamodbattribute.UnmarshalMap(result.Item, &item)
   if err != nil {
-      panic(fmt.Sprintf("Failed to unmarshal Record, %v", err))
+    panic(fmt.Sprintf("Failed to unmarshal Record, %v", err))
+  }
+
+  if item.CounterValue == 0 {
+    panic(fmt.Sprintf("Failed to obtain counterValue", err))
   }
   
   return item.CounterValue
