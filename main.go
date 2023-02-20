@@ -6,7 +6,7 @@ import (
   "github.com/aws/aws-sdk-go/service/dynamodb"
   "github.com/aws/aws-sdk-go/service/dynamodb/dynamodbattribute"
 
-  //"github.com/aws/aws-lambda-go/lambda"
+  "github.com/aws/aws-lambda-go/lambda"
 
   "fmt"
   "log"
